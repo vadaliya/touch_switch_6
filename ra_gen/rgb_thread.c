@@ -4,9 +4,9 @@
 #if 1
 static StaticTask_t rgb_thread_memory;
 #if defined(__ARMCC_VERSION)           /* AC6 compiler */
-                static uint8_t rgb_thread_stack[1024] BSP_PLACE_IN_SECTION(BSP_UNINIT_SECTION_PREFIX ".stack.thread") BSP_ALIGN_VARIABLE(BSP_STACK_ALIGNMENT);
+                static uint8_t rgb_thread_stack[768] BSP_PLACE_IN_SECTION(BSP_UNINIT_SECTION_PREFIX ".stack.thread") BSP_ALIGN_VARIABLE(BSP_STACK_ALIGNMENT);
                 #else
-static uint8_t rgb_thread_stack[1024] BSP_PLACE_IN_SECTION(BSP_UNINIT_SECTION_PREFIX ".stack.rgb_thread") BSP_ALIGN_VARIABLE(BSP_STACK_ALIGNMENT);
+static uint8_t rgb_thread_stack[768] BSP_PLACE_IN_SECTION(BSP_UNINIT_SECTION_PREFIX ".stack.rgb_thread") BSP_ALIGN_VARIABLE(BSP_STACK_ALIGNMENT);
 #endif
 #endif
 TaskHandle_t rgb_thread;
@@ -32,7 +32,7 @@ void rgb_thread_create(void)
                     BaseType_t rgb_thread_create_err = xTaskCreate(
                     #endif
                                     rgb_thread_func,
-                                    (const char*) "RGB Thread", 1024 / 4, // In words, not bytes
+                                    (const char*) "RGB Thread", 768 / 4, // In words, not bytes
                                     (void*) &rgb_thread_parameters, //pvParameters
                                     3,
 #if 1

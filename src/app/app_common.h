@@ -33,19 +33,19 @@
 #include "event_groups.h"
 #include "semphr.h"
 #include "timers.h"
+#include "app/app_log.h"
 
 #include "common_data.h"   /* FSP-generated: declares g_heartbeat_event_group,
                              * g_system_state_event_group, g_eeprom_mutex,
                              * g_config_mutex, g_ir_capture_semaphore,
-                             * g_uart_rx_semaphore, g_touch_scan_complete_semaphore
-                             * -- all created via the Configurator's New Object,
-                             * Static allocation. ADD g_touch_scan_complete_semaphore
-                             * (Binary Semaphore) the same way as the other two --
-                             * it's given by the rm_touch scan-complete callback
-                             * (see hal_touch.c) and taken by
-                             * hal_touch_scan_and_wait(). NOTE: this replaces the
-                             * earlier g_ctsu_scan_complete_semaphore name -- rename
-                             * if you already created that one via the wizard.
+                             * g_uart_rx_semaphore, g_uart_tx_complete_semaphore,
+                             * g_flash_op_complete_semaphore -- all created via
+                             * the Configurator's New Object, Static allocation.
+                             * NOTE: g_touch_scan_complete_semaphore is NOT
+                             * needed -- rm_touch's QE-managed config has no
+                             * exposed Callback field, so hal_touch.c polls
+                             * QE's own g_qe_touch_flag directly instead (see
+                             * hal_touch.c) rather than using a semaphore.
                              * Their StaticEventGroup_t / StaticSemaphore_t
                              * backing memory and g_common_init() live in
                              * common_data.c, fully auto-generated -- never
@@ -56,6 +56,15 @@
 
 #include <stdint.h>
 #include <stdbool.h>
+
+/* --------------------------------------------------------------------- */
+/* QE Touch Tuning Mode Macro:                                           */
+/* 1 = QE Touch serial tuning mode (UART callback -> QE Touch tuning)    */
+/* 0 = Normal operation (UART callback -> Tuya Wi-Fi module)             */
+/* --------------------------------------------------------------------- */
+#ifndef QE_TUNNING_TESTING
+#define QE_TUNNING_TESTING       (0)
+#endif
 
 /* --------------------------------------------------------------------- */
 /* Queue lengths -- used directly by app_queue_init.c, and referenced     */
@@ -79,17 +88,15 @@ typedef enum
     TOUCH_EVT_S4_SHORT_PRESS,
     TOUCH_EVT_S5_SHORT_PRESS,
     TOUCH_EVT_S6_SHORT_PRESS,
-    TOUCH_EVT_F1_SHORT_PRESS,
-    TOUCH_EVT_SLIDER_UP,
-    TOUCH_EVT_SLIDER_DOWN,
     TOUCH_EVT_LONG_PRESS_5S,      /* IR learn trigger; source switch in .switch_id */
     TOUCH_EVT_LONG_PRESS_10S,     /* Wi-Fi pairing trigger */
+    TOUCH_EVT_LONG_PRESS_15S,     /* Master Switch mode toggle trigger (Switch 1) */
 } touch_event_type_t;
 
 typedef struct
 {
     touch_event_type_t type;
-    uint8_t             switch_id;   /* 1-6 = S1-S6, 7 = F1, 0 = slider/n-a */
+    uint8_t            switch_id;   /* 1-6 = S1-S6 */
 } touch_event_t;
 /* Item size for this queue is sizeof(touch_event_t) -- computed by the
  * compiler in app_queue_init.c, not typed as a literal anywhere. If you
@@ -121,8 +128,7 @@ typedef struct
 typedef enum
 {
     RGB_UPDATE_SWITCH_STATE,   /* one LED, solid color per ON/OFF color config */
-    RGB_UPDATE_FAN_SPEED,      /* LED4-7 combination per speed level */
-    RGB_UPDATE_WIFI_STATUS,    /* LED index 11, blink pattern */
+    RGB_UPDATE_WIFI_STATUS,    /* Wi-Fi status LED, blink pattern */
     RGB_UPDATE_GLOBAL_COLOR,   /* ON or OFF color changed, full refresh */
     RGB_UPDATE_BRIGHTNESS,     /* global brightness changed, full refresh */
     RGB_UPDATE_BACKLIGHT_ONOFF,/* whole backlight system enable/disable */
@@ -132,8 +138,8 @@ typedef enum
 typedef struct
 {
     rgb_update_type_t type;
-    uint16_t           led_mask;  /* bitmask of LED0-LED11 affected, when applicable */
-    uint8_t            param;     /* e.g. fan speed 0-4, or on/off flag */
+    uint16_t          led_mask;  /* bitmask of affected LEDs on backlight chain */
+    uint8_t           param;     /* switch_id or on/off flag */
 } rgb_update_t;
 
 /* --------------------------------------------------------------------- */

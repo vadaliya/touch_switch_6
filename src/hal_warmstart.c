@@ -6,6 +6,7 @@
 
 #include "hal_data.h"
 #include "app/app_common.h"     /* ADDED: for app_queue_init(), event group handle/bits */
+// #include "test/neopixel_test.h"
 
 FSP_CPP_HEADER
 void R_BSP_WarmStart(bsp_warm_start_event_t event);
@@ -84,12 +85,8 @@ void R_BSP_WarmStart (bsp_warm_start_event_t event)
                  * scheduler never starts. */
             }
         }
+
+        app_log_init();
  
-        /* Default system state before the Wi-Fi module reports
-         * otherwise -- backlight defaults to enabled per spec's
-         * "Back-Light ON State" default behavior; Wi-Fi bits stay
-         * clear until the Tuya UART thread hears from the module.
-         */
-        xEventGroupSetBits(g_system_state_event_group, SYS_BIT_BACKLIGHT_ENABLED);
     }
 }

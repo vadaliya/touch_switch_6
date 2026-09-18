@@ -64,19 +64,19 @@ FSP Configuration
     
   RA2E1 event data
   RA Common
-    Main stack size (bytes): 0x400
+    Main stack size (bytes): 0x300
     Heap size (bytes): 0
     Bootloader Secondary XIP: Disabled
     MCU Vcc (mV): 3300
     Parameter checking: Disabled
     Assert Failures: Return FSP_ERR_ASSERTION
     Clock Registers not Reset Values during Startup: Disabled
-    Main Oscillator Populated: Populated
+    Main Oscillator Populated: Not Populated
     PFS Protect: Enabled
     C Runtime Initialization : Enabled
     Early BSP Initialization : Disabled
     Main Oscillator Clock Source: Crystal or Resonator
-    Subclock Populated: Populated
+    Subclock Populated: Not Populated
     Subclock Drive (Drive capacitance availability varies by MCU): Standard/Normal mode
     Subclock Stabilization Time (ms): 1000
     
@@ -94,20 +94,20 @@ FSP Configuration
     R7FA2E1A72DFL.pincfg -> g_bsp_pin_cfg
       AVCC0 42 ANALOG0_AVCC0 - - - - - - - - IO "Read only" - 
       AVSS0 43 ANALOG0_AVSS0 - - - - - - - - IO "Read only" - 
-      P000 48 CTSU0_TS21 S1 - None "Peripheral mode" - None "ADC0: AN000; CTSU0: TS21; ICU0: IRQ06" - IO - - 
-      P001 47 CTSU0_TS22 S2 - None "Peripheral mode" - None "ADC0: AN001; CTSU0: TS22; ICU0: IRQ07" - IO - - 
-      P002 46 - S3 - - Disabled - - "ADC0: AN002; CTSU0: TS23; ICU0: IRQ02" - None - - 
-      P010 45 - S4 - - Disabled - - "ADC0: AN005; ANALOG0: VREFH0; CTSU0: TS30-CFC" - None - - 
-      P011 44 - S5 - - Disabled - - "ADC0: AN006; ANALOG0: VREFL0; CTSU0: TS31-CFC" - None - - 
-      P012 41 - S6 - - Disabled - - "ADC0: AN007; CTSU0: TS32-CFC" - None - - 
-      P013 40 - F1 - - Disabled - - "ADC0: AN008; CTSU0: TS33-CFC" - None - - 
+      P000 48 CTSU0_TS21 FSP_TOUCH_SW3 - None "Peripheral mode" - None "ADC0: AN000; CTSU0: TS21; ICU0: IRQ06" - IO - - 
+      P001 47 CTSU0_TS22 FSP_TOUCH_SW1 - None "Peripheral mode" - None "ADC0: AN001; CTSU0: TS22; ICU0: IRQ07" - IO - - 
+      P002 46 GPIO FSP_RELAY_SW1 - None "Output mode (Initial Low)" - - "ADC0: AN002; CTSU0: TS23; ICU0: IRQ02" - IO - - 
+      P010 45 GPIO FSP_RELAY_SW2 - - "Output mode (Initial Low)" - - "ADC0: AN005; ANALOG0: VREFH0; CTSU0: TS30-CFC" - IO - - 
+      P011 44 GPIO FSP_RELAY_SW3 - - "Output mode (Initial Low)" - - "ADC0: AN006; ANALOG0: VREFL0; CTSU0: TS31-CFC" - IO - - 
+      P012 41 GPIO FSP_RELAY_SW4 - - "Output mode (Initial Low)" - - "ADC0: AN007; CTSU0: TS32-CFC" - IO - - 
+      P013 40 GPIO FSP_RELAY_SW5 - - "Output mode (Initial Low)" - - "ADC0: AN008; CTSU0: TS33-CFC" - IO - - 
       P014 39 - - - - Disabled - - "ADC0: AN009" - None - - 
-      P015 38 - Slider_Step_1 - - Disabled - - "ADC0: AN010; CTSU0: TS28-CFC; ICU0: IRQ07" - None - - 
+      P015 38 GPIO FSP_RELAY_SW6 - None "Output mode (Initial Low)" - - "ADC0: AN010; CTSU0: TS28-CFC; ICU0: IRQ07" - IO - - 
       P100 36 - - - - Disabled - - "ACMPLP0: CMPIN0; ADC0: AN022; AGT0: AGTIO0; CTSU0: TS26-CFC; GPT_POEG0: GTETRGA; GPT8: GTIOC8B; ICU0: IRQ02; IIC0: SCL0; KINT0: KRM00; SCI0: RXD0; SCI0: SCL0; SCI1: SCK1; SPI0: MISOA" - None - - 
-      P101 35 CTSU0_TS16-CFC - - None "Peripheral mode" CMOS None "ACMPLP0: CMPREF0; ADC0: AN021; AGT0: AGTEE0; CTSU0: TS16-CFC; GPT_POEG1: GTETRGB; GPT8: GTIOC8A; ICU0: IRQ01; IIC0: SDA0; KINT0: KRM01; SCI0: SDA0; SCI0: TXD0; SCI1: CTS1; SPI0: MOSIA" - IO - - 
-      P102 34 - Slider_Step_2 - - Disabled - - "ACMPLP1: CMPIN1; ADC0: ADTRG0; ADC0: AN020; AGT0: AGTO0; CTSU0: TS15-CFC; GPT_OPS0: GTOWLO; GPT5: GTIOC5B; KINT0: KRM02; SCI0: SCK0; SCI2: SDA2; SCI2: TXD2; SPI0: RSPCKA" - None - - 
-      P103 33 CTSU0_TS14-CFC Slider_Step_3 - - "Peripheral mode" CMOS None "ACMPLP1: CMPREF1; ADC0: AN019; CTSU0: TS14-CFC; GPT_OPS0: GTOWUP; GPT5: GTIOC5A; KINT0: KRM03; SCI0: CTS0; SPI0: SSLA0" - IO - - 
-      P104 32 - Slider_Step_4 - - Disabled - - "CTSU0: TS13-CFC; GPT_POEG1: GTETRGB; GPT4: GTIOC4B; ICU0: IRQ01; KINT0: KRM04; SCI0: RXD0; SCI0: SCL0; SPI0: SSLA1" - None - - 
+      P101 35 CTSU0_TS16-CFC FSP_TOUCH_SW2 - None "Peripheral mode" CMOS None "ACMPLP0: CMPREF0; ADC0: AN021; AGT0: AGTEE0; CTSU0: TS16-CFC; GPT_POEG1: GTETRGB; GPT8: GTIOC8A; ICU0: IRQ01; IIC0: SDA0; KINT0: KRM01; SCI0: SDA0; SCI0: TXD0; SCI1: CTS1; SPI0: MOSIA" - IO - - 
+      P102 34 - - - - Disabled - - "ACMPLP1: CMPIN1; ADC0: ADTRG0; ADC0: AN020; AGT0: AGTO0; CTSU0: TS15-CFC; GPT_OPS0: GTOWLO; GPT5: GTIOC5B; KINT0: KRM02; SCI0: SCK0; SCI2: SDA2; SCI2: TXD2; SPI0: RSPCKA" - None - - 
+      P103 33 CTSU0_TS14-CFC FSP_TOUCH_SW4 - - "Peripheral mode" CMOS None "ACMPLP1: CMPREF1; ADC0: AN019; CTSU0: TS14-CFC; GPT_OPS0: GTOWUP; GPT5: GTIOC5A; KINT0: KRM03; SCI0: CTS0; SPI0: SSLA0" - IO - - 
+      P104 32 - - - - Disabled - - "CTSU0: TS13-CFC; GPT_POEG1: GTETRGB; GPT4: GTIOC4B; ICU0: IRQ01; KINT0: KRM04; SCI0: RXD0; SCI0: SCL0; SPI0: SSLA1" - None - - 
       P108 25 DEBUG0_SWDIO - - - "Peripheral mode" - None "DEBUG0: SWDIO; GPT_OPS0: GTOULO; GPT0: GTIOC0B; SCI9: CTS9" - IO - - 
       P109 26 SCI9_TXD9 - - - "Peripheral mode" CMOS None "CGC0: CLKOUT; CTSU0: TS10-CFC; GPT_OPS0: GTOVUP; GPT4: GTIOC4A; SCI1: SCK1; SCI9: SDA9; SCI9: TXD9" - IO - - 
       P110 27 SCI9_RXD9 - - None "Peripheral mode" CMOS None "ACMP(0-1): VCOUT; CTSU0: TS11-CFC; GPT_OPS0: GTOVLO; GPT4: GTIOC4B; ICU0: IRQ03; SCI2: CTS2; SCI9: RXD9; SCI9: SCL9" - IO - - 
@@ -123,14 +123,14 @@ FSP Configuration
       P214 5 - - - - Disabled - - "CGC0: XCOUT" - None - - 
       P215 4 - - - - Disabled - - "CGC0: XCIN" - None - - 
       P300 24 DEBUG0_SWCLK - - - "Peripheral mode" - None "DEBUG0: SWCLK; GPT_OPS0: GTOUUP; GPT0: GTIOC0A" - IO - - 
-      P301 23 CTSU0_TS09-CFC - - None "Peripheral mode" CMOS None "AGT0: AGTIO0; CTSU0: TS09-CFC; GPT_OPS0: GTOULO; GPT7: GTIOC7B; ICU0: IRQ06; SCI2: RXD2; SCI2: SCL2; SCI9: CTS9" - IO - - 
-      P302 22 - - - - Disabled - - "CTSU0: TS08-CFC; GPT_OPS0: GTOUUP; GPT7: GTIOC7A; ICU0: IRQ05; SCI2: SDA2; SCI2: TXD2" - None - - 
-      P400 1 - - - - Disabled - - "AGT1: AGTIO1; CAC0: CACREF; GPT9: GTIOC9A; ICU0: IRQ00; IIC0: SCL0; SCI0: SCK0; SCI1: SCK1" - None - - 
-      P401 2 - - - - Disabled - - "GPT_POEG0: GTETRGA; GPT9: GTIOC9B; ICU0: IRQ05; IIC0: SDA0; SCI0: CTS0; SCI1: SDA1; SCI1: TXD1" - None - - 
+      P301 23 CTSU0_TS09-CFC FSP_TOUCH_SW6 - None "Peripheral mode" CMOS None "AGT0: AGTIO0; CTSU0: TS09-CFC; GPT_OPS0: GTOULO; GPT7: GTIOC7B; ICU0: IRQ06; SCI2: RXD2; SCI2: SCL2; SCI9: CTS9" - IO - - 
+      P302 22 GPT7_GTIOC7A FSP_RC5_IR - None "Peripheral mode" CMOS None "CTSU0: TS08-CFC; GPT_OPS0: GTOUUP; GPT7: GTIOC7A; ICU0: IRQ05; SCI2: SDA2; SCI2: TXD2" - IO - - 
+      P400 1 GPIO FSP_BACKLIGHT_DATA_PIN - None "Output mode (Initial Low)" CMOS - "AGT1: AGTIO1; CAC0: CACREF; GPT9: GTIOC9A; ICU0: IRQ00; IIC0: SCL0; SCI0: SCK0; SCI1: SCK1" - IO - - 
+      P401 2 GPIO FSP_WIFI_DATA_PIN - None "Output mode (Initial Low)" CMOS - "GPT_POEG0: GTETRGA; GPT9: GTIOC9B; ICU0: IRQ05; IIC0: SDA0; SCI0: CTS0; SCI1: SDA1; SCI1: TXD1" - IO - - 
       P407 12 - - - - Disabled - - "ADC0: ADTRG0; AGT0: AGTIO0; IIC0: SDA0; RTC0: RTCOUT; SCI0: CTS0" - None - - 
       P408 11 - - - - Disabled - - "CTSU0: TS04; GPT_OPS0: GTOWLO; ICU0: IRQ07; IIC0: SCL0; SCI1: CTS1" - None - - 
-      P409 10 CTSU0_TS05 - - None "Peripheral mode" CMOS None "CTSU0: TS05; GPT_OPS0: GTOWUP; ICU0: IRQ06" - IO - - 
-      P500 37 - - - - Disabled - - "GPT_OPS0: GTIU; GPT5: GTIOC5A" - None - - 
+      P409 10 CTSU0_TS05 FSP_TOUCH_SW5 - None "Peripheral mode" CMOS None "CTSU0: TS05; GPT_OPS0: GTOWUP; ICU0: IRQ06" - IO - - 
+      P500 37 GPIO FSP_RELAY_EN - - "Output mode (Initial Low)" CMOS - "GPT_OPS0: GTIU; GPT5: GTIOC5A" - IO - - 
       P913 15 - - - - Disabled - - "AGT1: AGTIO1; GPT_POEG0: GTETRGA" - None - - 
       P914 14 - - - - Disabled - - "AGT1: AGTOA1; GPT_POEG1: GTETRGB" - None - - 
       P915 13 - - - - Disabled - - - - None - - 
@@ -165,11 +165,6 @@ FSP Configuration
     RS-485 Support: Disable
     IrDA Support: Disabled
     
-  Module "Timer, General PWM (r_gpt)"
-    Parameter Checking: Default (BSP)
-    Pin Output Support: Disabled
-    Write Protect Enable: Disabled
-    
   Module "Watchdog (r_wdt)"
     Parameter Checking: Default (BSP)
     Register Start NMI Support: Disabled
@@ -193,9 +188,23 @@ FSP Configuration
     
   Module "CTSU (r_ctsu)"
     Parameter Checking: Default (BSP)
-    Support for using DTC: Disabled
+    Support for using DTC: Enabled
     Enable automatic judgment mode: Disabled
     Interrupt priority level: Priority 2
+    
+  Module "Transfer (r_dtc)"
+    Parameter Checking: Default (BSP)
+    Linker section to keep DTC vector table: .fsp_dtc_vector_table
+    
+  Module "Timer, General PWM (r_gpt)"
+    Parameter Checking: Default (BSP)
+    Pin Output Support: Disabled
+    Write Protect Enable: Disabled
+    
+  Module "Timer, Low-Power (r_agt)"
+    Parameter Checking: Default (BSP)
+    Pin Output Support: Disabled
+    Pin Input Support: Disabled
     
   FreeRTOS
     General: Custom FreeRTOSConfig.h: 
@@ -220,7 +229,7 @@ FSP Configuration
     General: Use Mutexes: Enabled
     General: Use Recursive Mutexes: Disabled
     General: Use Counting Semaphores: Enabled
-    Hooks: Check For Stack Overflow: Disabled
+    Hooks: Check For Stack Overflow: Enabled
     General: Queue Registry Size: 10
     General: Use Queue Sets: Disabled
     General: Use Time Slicing: Disabled
@@ -277,7 +286,7 @@ FSP Configuration
     Instance "FreeRTOS Port (rm_freertos_port)"
     Instance "g_uart0 UART (r_sci_uart)"
       General: Name: g_uart0
-      General: Channel: 9
+      General: Channel: 0
       General: Data Bits: 8bits
       General: Parity: None
       General: Stop Bits: 1bit
@@ -298,15 +307,41 @@ FSP Configuration
       Extra: RS-485: DE Pin Polarity: Active High
       Extra: RS-485: DE Port Number: Disabled
       Extra: RS-485: DE Pin Number: Disabled
-      Interrupts: Callback: NULL
+      Interrupts: Callback: hal_uart_callback
       Interrupts: Receive Interrupt Priority: Priority 2
       Interrupts: Transmit Data Empty Interrupt Priority: Priority 2
       Interrupts: Transmit End Interrupt Priority: Priority 2
       Interrupts: Error Interrupt Priority: Priority 2
       
-    Instance "g_timer0 Timer, General PWM (r_gpt)"
-      General: Name: g_timer0
-      General: Channel: 0
+    Instance "g_wdt0 Watchdog (r_wdt)"
+      Name: g_wdt0
+      Timeout: 16,384 Cycles
+      Clock Division Ratio: PCLK/8192
+      Window Start Position: 100 (Window Position Not Specified)
+      Window End Position: 0 (Window Position Not Specified)
+      Reset Control: Reset Output
+      Stop Control: WDT Count Disabled in Low Power Mode
+      NMI Callback: NULL
+      
+    Instance "g_external_irq0 External IRQ (r_icu)"
+      Name: g_external_irq0
+      Channel: 0
+      Trigger: Rising
+      Digital Filtering: Disabled
+      Filter Source: PCLK filter
+      Digital Filtering Sample Clock (Only valid when Digital Filtering is Enabled): PCLK / 64
+      Callback: NULL
+      Pin Interrupt Priority: Priority 2
+      
+    Instance "g_flash0 Flash (r_flash_lp)"
+      Name: g_flash0
+      Data Flash Background Operation: Enabled
+      Callback: hal_flash_callback
+      Flash Ready Interrupt Priority: Priority 2
+      
+    Instance "g_timer_ir_capture Timer, General PWM (r_gpt)"
+      General: Name: g_timer_ir_capture
+      General: Channel: 7
       General: Mode: Periodic
       General: Period: 0x10000
       General: Compare Match: Compare Match A: Status: Disabled
@@ -341,16 +376,16 @@ FSP Configuration
       Input: Start Source: 
       Input: Stop Source: 
       Input: Clear Source: 
-      Input: Capture A Source: 
-      Input: Capture B Source: 
+      Input: Capture A Source: GTIOCA Rising Edge While GTIOCB Low, GTIOCA Rising Edge While GTIOCB High
+      Input: Capture B Source: GTIOCA Falling Edge While GTIOCB Low, GTIOCA Falling Edge While GTIOCB High
       Input: Noise Filter A Sampling Clock Select: No Filter
       Input: Noise Filter B Sampling Clock Select: No Filter
       Pin Polarity: GTIOCnA Polarity: Normal
       Pin Polarity: GTIOCnB Polarity: Normal
-      Interrupts: Callback: NULL
+      Interrupts: Callback: ir_capture_callback
       Interrupts: Overflow/Crest Interrupt Priority: Disabled
-      Interrupts: Capture/Compare match A Interrupt Priority: Disabled
-      Interrupts: Capture/Compare match B Interrupt Priority: Disabled
+      Interrupts: Capture/Compare match A Interrupt Priority: Priority 2
+      Interrupts: Capture/Compare match B Interrupt Priority: Priority 2
       Interrupts: Compare Match C Interrupt Priority: Disabled
       Interrupts: Compare Match D Interrupt Priority: Disabled
       Interrupts: Compare Match E Interrupt Priority: Disabled
@@ -370,36 +405,29 @@ FSP Configuration
       Extra Features: Output Disable: GTIOCA Disable Setting: Disable Prohibited
       Extra Features: Output Disable: GTIOCB Disable Setting: Disable Prohibited
       
-    Instance "g_wdt0 Watchdog (r_wdt)"
-      Name: g_wdt0
-      Timeout: 16,384 Cycles
-      Clock Division Ratio: PCLK/8192
-      Window Start Position: 100 (Window Position Not Specified)
-      Window End Position: 0 (Window Position Not Specified)
-      Reset Control: Reset Output
-      Stop Control: WDT Count Disabled in Low Power Mode
-      NMI Callback: NULL
-      
-    Instance "g_external_irq0 External IRQ (r_icu)"
-      Name: g_external_irq0
-      Channel: 0
-      Trigger: Rising
-      Digital Filtering: Disabled
-      Filter Source: PCLK filter
-      Digital Filtering Sample Clock (Only valid when Digital Filtering is Enabled): PCLK / 64
-      Callback: NULL
-      Pin Interrupt Priority: Priority 2
-      
-    Instance "g_flash0 Flash (r_flash_lp)"
-      Name: g_flash0
-      Data Flash Background Operation: Disabled
-      Callback: NULL
-      Flash Ready Interrupt Priority: Disabled
+    Instance "g_timer0 Timer, Low-Power (r_agt)"
+      General: Name: g_timer0
+      General: Counter Bit Width: AGT 16-bit
+      General: Channel: 0
+      General: Mode: Periodic
+      General: Period: 0x10000
+      General: Period Unit: Raw Counts
+      Output: Duty Cycle Percent (only applicable in PWM mode): 50
+      General: Count Source: PCLKB
+      Output: AGTOA Output: Disabled
+      Output: AGTOB Output: Disabled
+      Output: AGTO Output: Disabled
+      Input: Measurement Mode: Measure Disabled
+      Input: Input Filter: No Filter
+      Input: Enable Pin: Enable Pin Not Used
+      Input: Trigger Edge: Trigger Edge Rising
+      Interrupts: Callback: hal_timer_overflow_callback
+      Interrupts: Underflow Interrupt Priority: Priority 1
       
   Thread "Touch Thread"
     Symbol: touch_thread
     Name: Touch Thread
-    Stack size (bytes): 2048
+    Stack size (bytes): 1280
     Priority: 4
     Thread Context: NULL
     Memory Allocation: Static
@@ -410,6 +438,32 @@ FSP Configuration
       Instance " CTSU (r_ctsu)"
         Scan Start Trigger: Software
         
+        Instance "g_transfer0 Transfer (r_dtc) CTSU WRITE (Write request interrupt)"
+          Name: g_transfer0
+          Mode: Normal
+          Transfer Size: 2 Bytes
+          Destination Address Mode: Fixed
+          Source Address Mode: Incremented
+          Repeat Area (Unused in Normal Mode): Source
+          Interrupt Frequency: After all transfers have completed
+          Number of Transfers: 0
+          Number of Blocks (Valid only in Block Mode): 0
+          Number of Transfer Descriptors: 1
+          Activation Source: CTSU WRITE (Write request interrupt)
+          
+        Instance "g_transfer1 Transfer (r_dtc) CTSU READ (Measurement data transfer request interrupt)"
+          Name: g_transfer1
+          Mode: Normal
+          Transfer Size: 2 Bytes
+          Destination Address Mode: Incremented
+          Source Address Mode: Fixed
+          Repeat Area (Unused in Normal Mode): Destination
+          Interrupt Frequency: After all transfers have completed
+          Number of Transfers: 0
+          Number of Blocks (Valid only in Block Mode): 0
+          Number of Transfer Descriptors: 1
+          Activation Source: CTSU READ (Measurement data transfer request interrupt)
+          
       Instance "g_uart_qe UART (r_sci_uart)"
         General: Name: g_uart_qe
         General: Channel: 9
@@ -442,8 +496,8 @@ FSP Configuration
   Thread "IR RX Thread"
     Symbol: ir_rx_thread
     Name: IR RX Thread
-    Stack size (bytes): 2048
-    Priority: 4
+    Stack size (bytes): 1280
+    Priority: 1
     Thread Context: NULL
     Memory Allocation: Static
     Allocate Secure Context: Enable
@@ -451,7 +505,7 @@ FSP Configuration
   Thread "RGB Thread"
     Symbol: rgb_thread
     Name: RGB Thread
-    Stack size (bytes): 1024
+    Stack size (bytes): 768
     Priority: 3
     Thread Context: NULL
     Memory Allocation: Static
@@ -460,7 +514,7 @@ FSP Configuration
   Thread "Tuya UART Thread"
     Symbol: tuya_uart_thread
     Name: Tuya UART Thread
-    Stack size (bytes): 1536
+    Stack size (bytes): 768
     Priority: 3
     Thread Context: NULL
     Memory Allocation: Static
@@ -469,7 +523,7 @@ FSP Configuration
   Thread "System Thread"
     Symbol: system_thread
     Name: System Thread
-    Stack size (bytes): 1024
+    Stack size (bytes): 768
     Priority: 1
     Thread Context: NULL
     Memory Allocation: Static
@@ -507,5 +561,13 @@ FSP Configuration
     
   Object "g_touch_scan_complete_semaphore Binary Semaphore"
     Symbol: g_touch_scan_complete_semaphore
+    Memory Allocation: Static
+    
+  Object "g_flash_op_complete_semaphore Binary Semaphore"
+    Symbol: g_flash_op_complete_semaphore
+    Memory Allocation: Static
+    
+  Object "g_uart_tx_complete_semaphore Binary Semaphore"
+    Symbol: g_uart_tx_complete_semaphore
     Memory Allocation: Static
     

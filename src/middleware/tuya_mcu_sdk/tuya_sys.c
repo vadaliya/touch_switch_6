@@ -415,6 +415,8 @@ static unsigned char module_extend_function_cmd_handler(const unsigned char *cmd
             break;
 #endif
     }
+
+    return SUCCESS;
 }
 
 #endif

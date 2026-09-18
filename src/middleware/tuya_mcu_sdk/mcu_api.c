@@ -144,11 +144,12 @@ char* tuya_strcpy(char* dest, const char* src) {
 
 char* tuya_strncpy(char* dest, const char* src, u16 count) {
     char* tmp = dest;
-        while (count) {
-        if ((*tmp = *src) != 0)
+    while (count) {
+        if ((*tmp = *src) != 0) {
             src++;
-            tmp++;
-            count--;
+        }
+        tmp++;
+        count--;
     }
     return dest;
 }

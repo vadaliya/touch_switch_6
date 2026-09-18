@@ -1,39 +1,46 @@
 /* generated HAL source file - do not edit */
 #include "hal_data.h"
 
-flash_lp_instance_ctrl_t g_flash0_ctrl;
-const flash_cfg_t g_flash0_cfg =
-{ .data_flash_bgo = false, .p_callback = NULL, .p_context = NULL, .ipl = (BSP_IRQ_DISABLED),
-#if defined(VECTOR_NUMBER_FCU_FRDYI)
-    .irq                 = VECTOR_NUMBER_FCU_FRDYI,
+agt_instance_ctrl_t g_timer0_ctrl;
+const agt_extended_cfg_t g_timer0_extend =
+{ .count_source = AGT_CLOCK_PCLKB,
+  .agto = AGT_PIN_CFG_DISABLED,
+  .agtoab_settings_b.agtoa = AGT_PIN_CFG_DISABLED,
+  .agtoab_settings_b.agtob = AGT_PIN_CFG_DISABLED,
+  .measurement_mode = AGT_MEASURE_DISABLED,
+  .agtio_filter = AGT_AGTIO_FILTER_NONE,
+  .enable_pin = AGT_ENABLE_PIN_NOT_USED,
+  .trigger_edge = AGT_TRIGGER_EDGE_RISING,
+  .counter_bit_width = AGT_COUNTER_BIT_WIDTH_16, };
+const timer_cfg_t g_timer0_cfg =
+{ .mode = TIMER_MODE_PERIODIC,
+/* Actual period: 0.002730666666666667 seconds. Actual duty: 50%. */.period_counts = (uint32_t) 0x10000,
+  .duty_cycle_counts = 0x8000, .source_div = (timer_source_div_t) 0, .channel = 0, .p_callback =
+          hal_timer_overflow_callback,
+  /** If NULL then do not add & */
+#if defined(NULL)
+    .p_context           = NULL,
 #else
-  .irq = FSP_INVALID_VECTOR,
+  .p_context = (void*) &NULL,
+#endif
+  .p_extend = &g_timer0_extend,
+  .cycle_end_ipl = (1),
+#if defined(VECTOR_NUMBER_AGT0_INT)
+    .cycle_end_irq       = VECTOR_NUMBER_AGT0_INT,
+#else
+  .cycle_end_irq = FSP_INVALID_VECTOR,
 #endif
         };
 /* Instance structure to use this module. */
-const flash_instance_t g_flash0 =
-{ .p_ctrl = &g_flash0_ctrl, .p_cfg = &g_flash0_cfg, .p_api = &g_flash_on_flash_lp };
-wdt_instance_ctrl_t g_wdt0_ctrl;
-
-const wdt_cfg_t g_wdt0_cfg =
-{ .timeout = WDT_TIMEOUT_16384,
-  .clock_division = WDT_CLOCK_DIVISION_8192,
-  .window_start = WDT_WINDOW_START_100,
-  .window_end = WDT_WINDOW_END_0,
-  .reset_control = WDT_RESET_CONTROL_RESET,
-  .stop_control = WDT_STOP_CONTROL_ENABLE,
-  .p_callback = NULL, };
-
-/* Instance structure to use this module. */
-const wdt_instance_t g_wdt0 =
-{ .p_ctrl = &g_wdt0_ctrl, .p_cfg = &g_wdt0_cfg, .p_api = &g_wdt_on_wdt };
-gpt_instance_ctrl_t g_timer0_ctrl;
+const timer_instance_t g_timer0 =
+{ .p_ctrl = &g_timer0_ctrl, .p_cfg = &g_timer0_cfg, .p_api = &g_timer_on_agt };
+gpt_instance_ctrl_t g_timer_ir_capture_ctrl;
 #if 0
-const gpt_extended_pwm_cfg_t g_timer0_pwm_extend =
+const gpt_extended_pwm_cfg_t g_timer_ir_capture_pwm_extend =
 {
     .trough_ipl             = (BSP_IRQ_DISABLED),
-#if defined(VECTOR_NUMBER_GPT0_COUNTER_UNDERFLOW)
-    .trough_irq             = VECTOR_NUMBER_GPT0_COUNTER_UNDERFLOW,
+#if defined(VECTOR_NUMBER_GPT7_COUNTER_UNDERFLOW)
+    .trough_irq             = VECTOR_NUMBER_GPT7_COUNTER_UNDERFLOW,
 #else
     .trough_irq             = FSP_INVALID_VECTOR,
 #endif
@@ -51,7 +58,7 @@ const gpt_extended_pwm_cfg_t g_timer0_pwm_extend =
     .gtiocb_disable_setting = GPT_GTIOC_DISABLE_PROHIBITED,
 };
 #endif
-const gpt_extended_cfg_t g_timer0_extend =
+const gpt_extended_cfg_t g_timer_ir_capture_extend =
         { .gtioca =
         { .output_enabled = false, .stop_level = GPT_PIN_LEVEL_LOW },
           .gtiocb =
@@ -59,39 +66,42 @@ const gpt_extended_cfg_t g_timer0_extend =
           .start_source = (gpt_source_t) (GPT_SOURCE_NONE), .stop_source = (gpt_source_t) (GPT_SOURCE_NONE), .clear_source =
                   (gpt_source_t) (GPT_SOURCE_NONE),
           .count_up_source = (gpt_source_t) (GPT_SOURCE_NONE), .count_down_source = (gpt_source_t) (GPT_SOURCE_NONE), .capture_a_source =
-                  (gpt_source_t) (GPT_SOURCE_NONE),
-          .capture_b_source = (gpt_source_t) (GPT_SOURCE_NONE), .capture_a_ipl = (BSP_IRQ_DISABLED), .capture_b_ipl =
+                  (gpt_source_t) (
+                          GPT_SOURCE_GTIOCA_RISING_WHILE_GTIOCB_LOW | GPT_SOURCE_GTIOCA_RISING_WHILE_GTIOCB_HIGH
+                                  | GPT_SOURCE_NONE),
+          .capture_b_source = (gpt_source_t) (
+                  GPT_SOURCE_GTIOCA_FALLING_WHILE_GTIOCB_LOW | GPT_SOURCE_GTIOCA_FALLING_WHILE_GTIOCB_HIGH
+                          | GPT_SOURCE_NONE),
+          .capture_a_ipl = (2), .capture_b_ipl = (2), .compare_match_c_ipl = (BSP_IRQ_DISABLED), .compare_match_d_ipl =
                   (BSP_IRQ_DISABLED),
-          .compare_match_c_ipl = (BSP_IRQ_DISABLED), .compare_match_d_ipl = (BSP_IRQ_DISABLED), .compare_match_e_ipl =
-                  (BSP_IRQ_DISABLED),
-          .compare_match_f_ipl = (BSP_IRQ_DISABLED),
-#if defined(VECTOR_NUMBER_GPT0_CAPTURE_COMPARE_A)
-    .capture_a_irq         = VECTOR_NUMBER_GPT0_CAPTURE_COMPARE_A,
+          .compare_match_e_ipl = (BSP_IRQ_DISABLED), .compare_match_f_ipl = (BSP_IRQ_DISABLED),
+#if defined(VECTOR_NUMBER_GPT7_CAPTURE_COMPARE_A)
+    .capture_a_irq         = VECTOR_NUMBER_GPT7_CAPTURE_COMPARE_A,
 #else
           .capture_a_irq = FSP_INVALID_VECTOR,
 #endif
-#if defined(VECTOR_NUMBER_GPT0_CAPTURE_COMPARE_B)
-    .capture_b_irq         = VECTOR_NUMBER_GPT0_CAPTURE_COMPARE_B,
+#if defined(VECTOR_NUMBER_GPT7_CAPTURE_COMPARE_B)
+    .capture_b_irq         = VECTOR_NUMBER_GPT7_CAPTURE_COMPARE_B,
 #else
           .capture_b_irq = FSP_INVALID_VECTOR,
 #endif
-#if defined(VECTOR_NUMBER_GPT0_COMPARE_C)
-    .compare_match_c_irq   = VECTOR_NUMBER_GPT0_COMPARE_C,
+#if defined(VECTOR_NUMBER_GPT7_COMPARE_C)
+    .compare_match_c_irq   = VECTOR_NUMBER_GPT7_COMPARE_C,
 #else
           .compare_match_c_irq = FSP_INVALID_VECTOR,
 #endif
-#if defined(VECTOR_NUMBER_GPT0_COMPARE_D)
-    .compare_match_d_irq   = VECTOR_NUMBER_GPT0_COMPARE_D,
+#if defined(VECTOR_NUMBER_GPT7_COMPARE_D)
+    .compare_match_d_irq   = VECTOR_NUMBER_GPT7_COMPARE_D,
 #else
           .compare_match_d_irq = FSP_INVALID_VECTOR,
 #endif
-#if defined(VECTOR_NUMBER_GPT0_COMPARE_E)
-    .compare_match_e_irq   = VECTOR_NUMBER_GPT0_COMPARE_E,
+#if defined(VECTOR_NUMBER_GPT7_COMPARE_E)
+    .compare_match_e_irq   = VECTOR_NUMBER_GPT7_COMPARE_E,
 #else
           .compare_match_e_irq = FSP_INVALID_VECTOR,
 #endif
-#if defined(VECTOR_NUMBER_GPT0_COMPARE_F)
-    .compare_match_f_irq   = VECTOR_NUMBER_GPT0_COMPARE_F,
+#if defined(VECTOR_NUMBER_GPT7_COMPARE_F)
+    .compare_match_f_irq   = VECTOR_NUMBER_GPT7_COMPARE_F,
 #else
           .compare_match_f_irq = FSP_INVALID_VECTOR,
 #endif
@@ -106,7 +116,7 @@ const gpt_extended_cfg_t g_timer0_extend =
                   GPT_CAPTURE_FILTER_NONE,
           .capture_filter_gtiocb = GPT_CAPTURE_FILTER_NONE,
 #if 0
-    .p_pwm_cfg             = &g_timer0_pwm_extend,
+    .p_pwm_cfg             = &g_timer_ir_capture_pwm_extend,
 #else
           .p_pwm_cfg = NULL,
 #endif
@@ -132,27 +142,53 @@ const gpt_extended_cfg_t g_timer0_extend =
           .gtioca_polarity = GPT_GTIOC_POLARITY_NORMAL,
           .gtiocb_polarity = GPT_GTIOC_POLARITY_NORMAL, };
 
-const timer_cfg_t g_timer0_cfg =
+const timer_cfg_t g_timer_ir_capture_cfg =
 { .mode = TIMER_MODE_PERIODIC,
 /* Actual period: 0.0013653333333333334 seconds. Actual duty: 50%. */.period_counts = (uint32_t) 0x10000,
-  .duty_cycle_counts = 0x8000, .source_div = (timer_source_div_t) 0, .channel = 0, .p_callback = NULL,
+  .duty_cycle_counts = 0x8000, .source_div = (timer_source_div_t) 0, .channel = 7, .p_callback = ir_capture_callback,
   /** If NULL then do not add & */
 #if defined(NULL)
     .p_context           = NULL,
 #else
   .p_context = (void*) &NULL,
 #endif
-  .p_extend = &g_timer0_extend,
+  .p_extend = &g_timer_ir_capture_extend,
   .cycle_end_ipl = (BSP_IRQ_DISABLED),
-#if defined(VECTOR_NUMBER_GPT0_COUNTER_OVERFLOW)
-    .cycle_end_irq       = VECTOR_NUMBER_GPT0_COUNTER_OVERFLOW,
+#if defined(VECTOR_NUMBER_GPT7_COUNTER_OVERFLOW)
+    .cycle_end_irq       = VECTOR_NUMBER_GPT7_COUNTER_OVERFLOW,
 #else
   .cycle_end_irq = FSP_INVALID_VECTOR,
 #endif
         };
 /* Instance structure to use this module. */
-const timer_instance_t g_timer0 =
-{ .p_ctrl = &g_timer0_ctrl, .p_cfg = &g_timer0_cfg, .p_api = &g_timer_on_gpt };
+const timer_instance_t g_timer_ir_capture =
+{ .p_ctrl = &g_timer_ir_capture_ctrl, .p_cfg = &g_timer_ir_capture_cfg, .p_api = &g_timer_on_gpt };
+flash_lp_instance_ctrl_t g_flash0_ctrl;
+const flash_cfg_t g_flash0_cfg =
+{ .data_flash_bgo = true, .p_callback = hal_flash_callback, .p_context = NULL, .ipl = (2),
+#if defined(VECTOR_NUMBER_FCU_FRDYI)
+    .irq                 = VECTOR_NUMBER_FCU_FRDYI,
+#else
+  .irq = FSP_INVALID_VECTOR,
+#endif
+        };
+/* Instance structure to use this module. */
+const flash_instance_t g_flash0 =
+{ .p_ctrl = &g_flash0_ctrl, .p_cfg = &g_flash0_cfg, .p_api = &g_flash_on_flash_lp };
+wdt_instance_ctrl_t g_wdt0_ctrl;
+
+const wdt_cfg_t g_wdt0_cfg =
+{ .timeout = WDT_TIMEOUT_16384,
+  .clock_division = WDT_CLOCK_DIVISION_8192,
+  .window_start = WDT_WINDOW_START_100,
+  .window_end = WDT_WINDOW_END_0,
+  .reset_control = WDT_RESET_CONTROL_RESET,
+  .stop_control = WDT_STOP_CONTROL_ENABLE,
+  .p_callback = NULL, };
+
+/* Instance structure to use this module. */
+const wdt_instance_t g_wdt0 =
+{ .p_ctrl = &g_wdt0_ctrl, .p_cfg = &g_wdt0_cfg, .p_api = &g_wdt_on_wdt };
 sci_uart_instance_ctrl_t g_uart0_ctrl;
 
 baud_setting_t g_uart0_baud_setting =
@@ -185,8 +221,8 @@ const sci_uart_extended_cfg_t g_uart0_cfg_extend =
 
 /** UART interface configuration */
 const uart_cfg_t g_uart0_cfg =
-{ .channel = 9, .data_bits = UART_DATA_BITS_8, .parity = UART_PARITY_OFF, .stop_bits = UART_STOP_BITS_1, .p_callback =
-          NULL,
+{ .channel = 0, .data_bits = UART_DATA_BITS_8, .parity = UART_PARITY_OFF, .stop_bits = UART_STOP_BITS_1, .p_callback =
+          hal_uart_callback,
   .p_context = NULL, .p_extend = &g_uart0_cfg_extend,
 #define RA_NOT_DEFINED (1)
 #if (RA_NOT_DEFINED == RA_NOT_DEFINED)
@@ -202,23 +238,23 @@ const uart_cfg_t g_uart0_cfg =
 #undef RA_NOT_DEFINED
   .rxi_ipl = (2),
   .txi_ipl = (2), .tei_ipl = (2), .eri_ipl = (2),
-#if defined(VECTOR_NUMBER_SCI9_RXI)
-                .rxi_irq             = VECTOR_NUMBER_SCI9_RXI,
+#if defined(VECTOR_NUMBER_SCI0_RXI)
+                .rxi_irq             = VECTOR_NUMBER_SCI0_RXI,
 #else
   .rxi_irq = FSP_INVALID_VECTOR,
 #endif
-#if defined(VECTOR_NUMBER_SCI9_TXI)
-                .txi_irq             = VECTOR_NUMBER_SCI9_TXI,
+#if defined(VECTOR_NUMBER_SCI0_TXI)
+                .txi_irq             = VECTOR_NUMBER_SCI0_TXI,
 #else
   .txi_irq = FSP_INVALID_VECTOR,
 #endif
-#if defined(VECTOR_NUMBER_SCI9_TEI)
-                .tei_irq             = VECTOR_NUMBER_SCI9_TEI,
+#if defined(VECTOR_NUMBER_SCI0_TEI)
+                .tei_irq             = VECTOR_NUMBER_SCI0_TEI,
 #else
   .tei_irq = FSP_INVALID_VECTOR,
 #endif
-#if defined(VECTOR_NUMBER_SCI9_ERI)
-                .eri_irq             = VECTOR_NUMBER_SCI9_ERI,
+#if defined(VECTOR_NUMBER_SCI0_ERI)
+                .eri_irq             = VECTOR_NUMBER_SCI0_ERI,
 #else
   .eri_irq = FSP_INVALID_VECTOR,
 #endif

@@ -243,7 +243,7 @@ If needed, please enable this macro, and the MCU calls open_module_time_serve in
 And view the result in the open_module_time_serve_result function in the protocol.c file.
 There is a #err prompt inside open_module_time_serve_result. Please delete the #err after completing the function.
 ******************************************************************************/
-//#define         MODULE_EXPANDING_SERVICE_ENABLE        //Enable module expansion service function
+#define         MODULE_EXPANDING_SERVICE_ENABLE        //Enable module expansion service function
 
 /******************************************************************************
                       20: Does the MCU need to support Bluetooth related functions?
@@ -309,7 +309,7 @@ May need to appropriately increase send and receive buffer sizes.
 /*******************************************************************************
                       30. Factory Reset Function
 ********************************************************************************/
-// #define FACTORY_RECOVERY_FUNCTION_ENABLE
+#define FACTORY_RECOVERY_FUNCTION_ENABLE
 
 /*******************************************************************************
                       31. Get DP Cache Command

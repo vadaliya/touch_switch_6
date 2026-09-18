@@ -1,74 +1,82 @@
 /*
  * tuya_uart_thread_entry.c
  *
- * FSP-generated once for the "Tuya UART Thread" (symbol: tuya_uart_thread).
- *
- * Owns the UART link to the Tuya Wi-Fi module (9600 baud, Tuya MCU
- * protocol). The SCI UART RX ISR (registered via the r_sci_uart callback
- * in the FSP Configurator) pushes received bytes into a ring buffer and
- * gives g_uart_rx_semaphore. This thread blocks on that semaphore,
- * reassembles frames via the vendored Tuya MCU SDK, and for each
- * decoded DP, posts a tuya_dp_cmd_t to g_tuya_dp_queue.
+ * Owns the UART link to the Tuya Wi-Fi module (Tuya MCU protocol).
+ * Drains RX ring buffer, executes Tuya MCU SDK frame processor,
+ * processes outbound DP change queue, monitors Wi-Fi connection state,
+ * ticks countdown timers, and sets watchdog heartbeat.
  */
 
 #include "app/app_common.h"
+#include "hal/hal_uart.h"
+#include "middleware/tuya_mcu_sdk/wifi.h"
+#include "middleware/tuya_mcu_sdk/mcu_api.h"
+#include "app/tuya_dp_handlers.h"
+#include "app/countdown_manager.h"
+#include "app/wifi_config_manager.h"
+#include "app/factory_reset_manager.h"
+#include "app/app_log.h"
+
+extern void tuya_uart_thread_entry(void *pvParameters);
 
 void tuya_uart_thread_entry(void *pvParameters)
 {
     FSP_PARAMETER_NOT_USED(pvParameters);
 
-    /* TODO: hal_uart_init() for g_uart0 (SCI channel wired to the Tuya
-     * module); tuya_mcu_sdk_init() to set up protocol state machine.
-     * The UART callback should be minimal, e.g.:
-     *
-     *   void uart_callback(uart_callback_args_t *p_args)
-     *   {
-     *       if (p_args->event == UART_EVENT_RX_CHAR)
-     *       {
-     *           ring_buffer_push((uint8_t) p_args->data);
-     *           BaseType_t hpt_woken = pdFALSE;
-     *           xSemaphoreGiveFromISR(g_uart_rx_semaphore, &hpt_woken);
-     *           portYIELD_FROM_ISR(hpt_woken);
-     *       }
-     *   }
-     */
+    LOG_INFO("Tuya UART Thread: Initializing UART and Tuya MCU SDK...");
+
+    /* Initialize UART hardware instance */
+    hal_uart_init();
+
+    /* Initialize Tuya MCU SDK */
+    wifi_protocol_init();
+
+    /* Initialize Managers */
+    countdown_manager_init();
+    wifi_config_manager_init();
+    factory_reset_manager_init();
+
+    TickType_t last_periodic_tick = xTaskGetTickCount();
+    uint8_t rx_buf[32];
+
+    LOG_INFO("Tuya UART Thread: Ready and entering processing loop.");
 
     for (;;)
     {
-        /* SEMAPHORE: block until the UART RX ISR signals new bytes are
-         * in the ring buffer. 1 s timeout keeps this thread's heartbeat
-         * fresh even with the link idle.
-         */
-        if (xSemaphoreTake(g_uart_rx_semaphore, pdMS_TO_TICKS(1000)) == pdTRUE)
-        {
-            /* TODO: tuya_mcu_sdk_process();
-             *       -> drains the ring buffer, runs the Tuya frame state
-             *          machine, and for each fully decoded DP:
-             *
-             *   tuya_dp_cmd_t cmd = { .dpid = dpid, .length = len };
-             *   memcpy(cmd.value, payload, len);
-             *   xQueueSend(g_tuya_dp_queue, &cmd, pdMS_TO_TICKS(20));
-             *
-             * Posting to a queue here (rather than calling
-             * dp_download_*_handle() directly) keeps EEPROM writes
-             * off this thread -- a slow flash write must never stall
-             * UART servicing and risk dropping the next frame.
-             */
+        /* Block on UART RX semaphore with a 20 ms timeout */
+        (void) xSemaphoreTake(g_uart_rx_semaphore, pdMS_TO_TICKS(20));
 
-            /* MUTEX example: if this thread ever needs to write EEPROM
-             * directly (e.g. immediate ACK path), always go through the
-             * mutex -- eeprom_driver calls from ANY thread must be
-             * serialized since data flash write/erase are not reentrant:
-             *
-             *   if (xSemaphoreTake(g_eeprom_mutex, pdMS_TO_TICKS(100)) == pdTRUE)
-             *   {
-             *       eeprom_driver_write(...);
-             *       xSemaphoreGive(g_eeprom_mutex);
-             *   }
-             */
+        /* Drain all available bytes from UART RX ring buffer into Tuya SDK */
+        while (hal_uart_rx_available() > 0u)
+        {
+            uint32_t count = hal_uart_rx_read(rx_buf, sizeof(rx_buf));
+            for (uint32_t i = 0u; i < count; i++)
+            {
+                uart_receive_input(rx_buf[i]);
+            }
         }
 
-        /* EVENT GROUP: heartbeat check-in */
+        /* Run Tuya protocol state machine to parse incoming packets */
+        wifi_uart_service();
+
+        /* Process outbound DP updates queued by other threads */
+        tuya_dp_process_queue();
+
+        /* Process pending Wi-Fi pairing mode requests and incoming state changes immediately */
+        wifi_config_manager_process();
+
+        /* Periodic 1000 ms tasks */
+        TickType_t current_tick = xTaskGetTickCount();
+        if ((current_tick - last_periodic_tick) >= pdMS_TO_TICKS(1000))
+        {
+            uint32_t elapsed_ms = (uint32_t)((current_tick - last_periodic_tick) * portTICK_PERIOD_MS);
+            last_periodic_tick = current_tick;
+
+            /* Advance auto-off countdown timers */
+            countdown_manager_tick(elapsed_ms);
+        }
+
+        /* Watchdog heartbeat check-in */
         xEventGroupSetBits(g_heartbeat_event_group, HEARTBEAT_BIT_TUYA_UART);
     }
 }

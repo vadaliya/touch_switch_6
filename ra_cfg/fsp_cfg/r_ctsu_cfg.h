@@ -6,7 +6,7 @@
                  #endif
 
 #define CTSU_CFG_PARAM_CHECKING_ENABLE            (BSP_CFG_PARAM_CHECKING_ENABLE)
-#define CTSU_CFG_DTC_SUPPORT_ENABLE               (0)
+#define CTSU_CFG_DTC_SUPPORT_ENABLE               (1)
 #define CTSU_CFG_INT_PRIORITY_LEVEL               (2)
 #define CTSU_CFG_AUTO_JUDGE_ENABLE                (0)
 #ifndef QE_TOUCH_CONFIGURATION

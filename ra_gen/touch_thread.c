@@ -4,9 +4,9 @@
 #if 1
 static StaticTask_t touch_thread_memory;
 #if defined(__ARMCC_VERSION)           /* AC6 compiler */
-                static uint8_t touch_thread_stack[2048] BSP_PLACE_IN_SECTION(BSP_UNINIT_SECTION_PREFIX ".stack.thread") BSP_ALIGN_VARIABLE(BSP_STACK_ALIGNMENT);
+                static uint8_t touch_thread_stack[1280] BSP_PLACE_IN_SECTION(BSP_UNINIT_SECTION_PREFIX ".stack.thread") BSP_ALIGN_VARIABLE(BSP_STACK_ALIGNMENT);
                 #else
-static uint8_t touch_thread_stack[2048] BSP_PLACE_IN_SECTION(BSP_UNINIT_SECTION_PREFIX ".stack.touch_thread") BSP_ALIGN_VARIABLE(BSP_STACK_ALIGNMENT);
+static uint8_t touch_thread_stack[1280] BSP_PLACE_IN_SECTION(BSP_UNINIT_SECTION_PREFIX ".stack.touch_thread") BSP_ALIGN_VARIABLE(BSP_STACK_ALIGNMENT);
 #endif
 #endif
 TaskHandle_t touch_thread;
@@ -32,7 +32,7 @@ void touch_thread_create(void)
                     BaseType_t touch_thread_create_err = xTaskCreate(
                     #endif
                                       touch_thread_func,
-                                      (const char*) "Touch Thread", 2048 / 4, // In words, not bytes
+                                      (const char*) "Touch Thread", 1280 / 4, // In words, not bytes
                                       (void*) &touch_thread_parameters, //pvParameters
                                       4,
 #if 1

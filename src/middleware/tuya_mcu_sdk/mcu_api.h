@@ -614,4 +614,8 @@ void sbus_send_data(const u8* value, u8 value_length);
 
 
 
+#ifdef WIFI_TEST_ENABLE
+void mcu_start_wifitest(void);
+#endif
+
 #endif

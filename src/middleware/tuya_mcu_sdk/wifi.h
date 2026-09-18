@@ -21,6 +21,20 @@ Tuya is not responsible for MCU functional results.
 #ifndef __WIFI_H_
 #define __WIFI_H_
 
+#ifndef CONFIG_TUYA_DISABLE_ALL_ERROR_MARCO
+#define CONFIG_TUYA_DISABLE_ALL_ERROR_MARCO
+#endif
+
+#if defined(__GNUC__)
+#pragma GCC diagnostic ignored "-Wconversion"
+#pragma GCC diagnostic ignored "-Wmisleading-indentation"
+#pragma GCC diagnostic ignored "-Wmissing-declarations"
+#pragma GCC diagnostic ignored "-Wunused-variable"
+#pragma GCC diagnostic ignored "-Wunused-parameter"
+#pragma GCC diagnostic ignored "-Wpointer-sign"
+#pragma GCC diagnostic ignored "-Wreturn-type"
+#endif
+
 #include "stdio.h"
 #include "string.h"
 #include "protocol.h"

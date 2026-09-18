@@ -28,9 +28,12 @@ Tuya is not responsible for MCU functional results.
 3: Do not call reporting functions inside interrupt/timer interrupt handlers.
 ******************************************************************************/
 
+#include "bsp_api.h"
 #include "protocol.h"
 
 #include "wifi.h"
+#include "hal/hal_uart.h"
+#include "app/tuya_dp_handlers.h"
 
 #ifdef WEATHER_ENABLE
 /**
@@ -130,6 +133,7 @@ void uart_transmit_output(u8 value) {
         extern void Uart_PutChar(u8 value);
         Uart_PutChar(value);	                                //UART send function
     */
+    (void) hal_uart_send_blocking(&value, 1u, 20u);
 }
 
 #if defined(CONFIG_MCU_SDK_TEST_ONLY_USE_NEW_DISPATCHER)
@@ -222,6 +226,7 @@ void all_data_update(void){
     mcu_dp_bool_update(DPID_FACTORY_RESET,current Factory Reset); //BOOL data report;
 
     */
+    tuya_dp_sync_all();
 }
 
 /******************************************************************************
@@ -255,7 +260,7 @@ static unsigned char dp_download_switch_1_handle(const unsigned char value[], un
     }
   
     //There should be a report after processing the DP
-    ret = mcu_dp_bool_update(DPID_SWITCH_1,switch_1);
+    ret = tuya_dp_handle_switch(1u, switch_1 != 0) ? SUCCESS : ERROR;
     if(ret == SUCCESS)
         return SUCCESS;
     else
@@ -284,7 +289,7 @@ static unsigned char dp_download_switch_2_handle(const unsigned char value[], un
     }
   
     //There should be a report after processing the DP
-    ret = mcu_dp_bool_update(DPID_SWITCH_2,switch_2);
+    ret = tuya_dp_handle_switch(2u, switch_2 != 0) ? SUCCESS : ERROR;
     if(ret == SUCCESS)
         return SUCCESS;
     else
@@ -313,7 +318,7 @@ static unsigned char dp_download_switch_3_handle(const unsigned char value[], un
     }
   
     //There should be a report after processing the DP
-    ret = mcu_dp_bool_update(DPID_SWITCH_3,switch_3);
+    ret = tuya_dp_handle_switch(3u, switch_3 != 0) ? SUCCESS : ERROR;
     if(ret == SUCCESS)
         return SUCCESS;
     else
@@ -342,7 +347,7 @@ static unsigned char dp_download_switch_4_handle(const unsigned char value[], un
     }
   
     //There should be a report after processing the DP
-    ret = mcu_dp_bool_update(DPID_SWITCH_4,switch_4);
+    ret = tuya_dp_handle_switch(4u, switch_4 != 0) ? SUCCESS : ERROR;
     if(ret == SUCCESS)
         return SUCCESS;
     else
@@ -371,7 +376,7 @@ static unsigned char dp_download_switch_5_handle(const unsigned char value[], un
     }
   
     //There should be a report after processing the DP
-    ret = mcu_dp_bool_update(DPID_SWITCH_5,switch_5);
+    ret = tuya_dp_handle_switch(5u, switch_5 != 0) ? SUCCESS : ERROR;
     if(ret == SUCCESS)
         return SUCCESS;
     else
@@ -400,7 +405,7 @@ static unsigned char dp_download_switch_6_handle(const unsigned char value[], un
     }
   
     //There should be a report after processing the DP
-    ret = mcu_dp_bool_update(DPID_SWITCH_6,switch_6);
+    ret = tuya_dp_handle_switch(6u, switch_6 != 0) ? SUCCESS : ERROR;
     if(ret == SUCCESS)
         return SUCCESS;
     else
@@ -427,7 +432,7 @@ static unsigned char dp_download_countdown_1_handle(const unsigned char value[],
     */
     
     //There should be a report after processing the DP
-    ret = mcu_dp_value_update(DPID_COUNTDOWN_1,countdown_1);
+    ret = tuya_dp_handle_countdown(1u, (uint32_t)countdown_1) ? SUCCESS : ERROR;
     if(ret == SUCCESS)
         return SUCCESS;
     else
@@ -454,7 +459,7 @@ static unsigned char dp_download_countdown_2_handle(const unsigned char value[],
     */
     
     //There should be a report after processing the DP
-    ret = mcu_dp_value_update(DPID_COUNTDOWN_2,countdown_2);
+    ret = tuya_dp_handle_countdown(2u, (uint32_t)countdown_2) ? SUCCESS : ERROR;
     if(ret == SUCCESS)
         return SUCCESS;
     else
@@ -481,7 +486,7 @@ static unsigned char dp_download_countdown_3_handle(const unsigned char value[],
     */
     
     //There should be a report after processing the DP
-    ret = mcu_dp_value_update(DPID_COUNTDOWN_3,countdown_3);
+    ret = tuya_dp_handle_countdown(3u, (uint32_t)countdown_3) ? SUCCESS : ERROR;
     if(ret == SUCCESS)
         return SUCCESS;
     else
@@ -508,7 +513,7 @@ static unsigned char dp_download_countdown_4_handle(const unsigned char value[],
     */
     
     //There should be a report after processing the DP
-    ret = mcu_dp_value_update(DPID_COUNTDOWN_4,countdown_4);
+    ret = tuya_dp_handle_countdown(4u, (uint32_t)countdown_4) ? SUCCESS : ERROR;
     if(ret == SUCCESS)
         return SUCCESS;
     else
@@ -535,7 +540,7 @@ static unsigned char dp_download_countdown_5_handle(const unsigned char value[],
     */
     
     //There should be a report after processing the DP
-    ret = mcu_dp_value_update(DPID_COUNTDOWN_5,countdown_5);
+    ret = tuya_dp_handle_countdown(5u, (uint32_t)countdown_5) ? SUCCESS : ERROR;
     if(ret == SUCCESS)
         return SUCCESS;
     else
@@ -562,7 +567,7 @@ static unsigned char dp_download_countdown_6_handle(const unsigned char value[],
     */
     
     //There should be a report after processing the DP
-    ret = mcu_dp_value_update(DPID_COUNTDOWN_6,countdown_6);
+    ret = tuya_dp_handle_countdown(6u, (uint32_t)countdown_6) ? SUCCESS : ERROR;
     if(ret == SUCCESS)
         return SUCCESS;
     else
@@ -591,7 +596,7 @@ static unsigned char dp_download_switch_all_handle(const unsigned char value[], 
     }
   
     //There should be a report after processing the DP
-    ret = mcu_dp_bool_update(DPID_SWITCH_ALL,switch_all);
+    ret = tuya_dp_handle_switch_all(switch_all != 0) ? SUCCESS : ERROR;
     if(ret == SUCCESS)
         return SUCCESS;
     else
@@ -628,7 +633,7 @@ static unsigned char dp_download_relay_status_handle(const unsigned char value[]
     }
     
     //There should be a report after processing the DP
-    ret = mcu_dp_enum_update(DPID_RELAY_STATUS, relay_status);
+    ret = tuya_dp_handle_relay_status(relay_status) ? SUCCESS : ERROR;
     if(ret == SUCCESS)
         return SUCCESS;
     else
@@ -657,7 +662,7 @@ static unsigned char dp_download_backlight_switch_handle(const unsigned char val
     }
   
     //There should be a report after processing the DP
-    ret = mcu_dp_bool_update(DPID_BACKLIGHT_SWITCH,backlight_switch);
+    ret = tuya_dp_handle_backlight_switch(backlight_switch != 0) ? SUCCESS : ERROR;
     if(ret == SUCCESS)
         return SUCCESS;
     else
@@ -673,24 +678,9 @@ Instructions for use : Issue and report type,need to report the result to App af
 *****************************************************************************/
 static unsigned char dp_download_fan_switch_handle(const unsigned char value[], unsigned short length)
 {
-    //Example: The current DP type isBOOL
-    unsigned char ret;
-    //0:off/1:on
-    unsigned char fan_switch;
-    
-    fan_switch = mcu_get_dp_download_bool(value,length);
-    if(fan_switch == 0) {
-        //bool off
-    }else {
-        //bool on
-    }
-  
-    //There should be a report after processing the DP
-    ret = mcu_dp_bool_update(DPID_FAN_SWITCH,fan_switch);
-    if(ret == SUCCESS)
-        return SUCCESS;
-    else
-        return ERROR;
+    (void) value;
+    (void) length;
+    return SUCCESS;
 }
 /*****************************************************************************
 Function name : dp_download_fan_countdown_handle
@@ -702,22 +692,9 @@ Instructions for use : Issue and report type,need to report the result to App af
 *****************************************************************************/
 static unsigned char dp_download_fan_countdown_handle(const unsigned char value[], unsigned short length)
 {
-    //Example: The current DP type isVALUE
-    unsigned char ret;
-    unsigned long fan_countdown;
-    
-    fan_countdown = mcu_get_dp_download_value(value,length);
-    /*
-    //VALUE type data processing
-    
-    */
-    
-    //There should be a report after processing the DP
-    ret = mcu_dp_value_update(DPID_FAN_COUNTDOWN,fan_countdown);
-    if(ret == SUCCESS)
-        return SUCCESS;
-    else
-        return ERROR;
+    (void) value;
+    (void) length;
+    return SUCCESS;
 }
 /*****************************************************************************
 Function name : dp_download_fan_speed_handle
@@ -729,22 +706,9 @@ Instructions for use : Issue and report type,need to report the result to App af
 *****************************************************************************/
 static unsigned char dp_download_fan_speed_handle(const unsigned char value[], unsigned short length)
 {
-    //Example: The current DP type isVALUE
-    unsigned char ret;
-    unsigned long fan_speed;
-    
-    fan_speed = mcu_get_dp_download_value(value,length);
-    /*
-    //VALUE type data processing
-    
-    */
-    
-    //There should be a report after processing the DP
-    ret = mcu_dp_value_update(DPID_FAN_SPEED,fan_speed);
-    if(ret == SUCCESS)
-        return SUCCESS;
-    else
-        return ERROR;
+    (void) value;
+    (void) length;
+    return SUCCESS;
 }
 /*****************************************************************************
 Function name : dp_download_color_values_handle
@@ -767,7 +731,7 @@ static unsigned char dp_download_color_values_handle(const unsigned char value[]
     */
     
     //There should be a report after processing the DP
-    ret = mcu_dp_value_update(DPID_COLOR_VALUES,color_values);
+    ret = tuya_dp_handle_color_values((uint32_t)color_values) ? SUCCESS : ERROR;
     if(ret == SUCCESS)
         return SUCCESS;
     else
@@ -796,7 +760,7 @@ static unsigned char dp_download_set_color_handle(const unsigned char value[], u
     }
   
     //There should be a report after processing the DP
-    ret = mcu_dp_bool_update(DPID_SET_COLOR,set_color);
+    ret = tuya_dp_handle_set_color(set_color != 0) ? SUCCESS : ERROR;
     if(ret == SUCCESS)
         return SUCCESS;
     else
@@ -823,7 +787,7 @@ static unsigned char dp_download_bright_per_handle(const unsigned char value[], 
     */
     
     //There should be a report after processing the DP
-    ret = mcu_dp_value_update(DPID_BRIGHT_PER,bright_per);
+    ret = tuya_dp_handle_bright_per((uint32_t)bright_per) ? SUCCESS : ERROR;
     if(ret == SUCCESS)
         return SUCCESS;
     else
@@ -852,7 +816,7 @@ static unsigned char dp_download_child_lock_handle(const unsigned char value[], 
     }
   
     //There should be a report after processing the DP
-    ret = mcu_dp_bool_update(DPID_CHILD_LOCK,child_lock);
+    ret = tuya_dp_handle_child_lock(child_lock != 0) ? SUCCESS : ERROR;
     if(ret == SUCCESS)
         return SUCCESS;
     else
@@ -881,7 +845,7 @@ static unsigned char dp_download_factory_reset_handle(const unsigned char value[
     }
   
     //There should be a report after processing the DP
-    ret = mcu_dp_bool_update(DPID_FACTORY_RESET,factory_reset);
+    ret = tuya_dp_handle_factory_reset(factory_reset != 0) ? SUCCESS : ERROR;
     if(ret == SUCCESS)
         return SUCCESS;
     else
@@ -1621,6 +1585,7 @@ void module_time_sync_handler(const unsigned char cmd_bytes[], unsigned short cm
     }
 
     unsigned char time_type = cmd_bytes[1];  // 0x00:Greenwich time  0x01:Local time
+    (void) time_type;
     unsigned char time_data[7];
 
     tuya_memcpy(time_data, cmd_bytes + 2, cmd_length - 2);
@@ -1645,6 +1610,7 @@ void module_time_sync_handler(const unsigned char cmd_bytes[], unsigned short cm
 }
 
 void request_weather_handler(const unsigned char cmd_datas[], unsigned short cmd_data_length) {
+    (void) cmd_data_length;
 #ifndef CONFIG_TUYA_DISABLE_ALL_ERROR_MARCO
 #error Active request for weather service data result return. Delete this error directive after completion.
 #endif
@@ -1676,11 +1642,9 @@ void module_start_reset_notify_handler(const unsigned char cmd_bytes[], unsigned
     }
 }
 
-void module_reset_notify_handler(const unsigned char cmd_bytes[], unsigned short cmd_length) {
-#ifndef CONFIG_TUYA_DISABLE_ALL_ERROR_MARCO
-#error Module reset notification. Delete this error directive after completion.
-#endif
+extern void factory_reset_manager_execute(void);
 
+void module_reset_notify_handler(const unsigned char cmd_bytes[], unsigned short cmd_length) {
     if (0x02 != cmd_length) {
         // Data length error
         return;
@@ -1689,15 +1653,15 @@ void module_reset_notify_handler(const unsigned char cmd_bytes[], unsigned short
     switch (cmd_bytes[1]) {
         case 0x00:
             // Module local reset
-
+            factory_reset_manager_execute();
             break;
         case 0x01:
             // APP remote reset
-
+            factory_reset_manager_execute();
             break;
         case 0x02:
             // APP restore factory reset
-
+            factory_reset_manager_execute();
             break;
         default:
             break;
@@ -1709,9 +1673,12 @@ void module_reset_notify_handler(const unsigned char cmd_bytes[], unsigned short
 }
 
 void module_wifi_remote_handler(const unsigned char cmd_datas[], unsigned short cmd_data_length) {
+    (void) cmd_data_length;
     u8 type = cmd_datas[1];
     u8 cmd = cmd_datas[2];
+    (void) cmd;
     u8 cmd_data = cmd_datas[3];
+    (void) cmd_data;
     u16 send_len = 0;
     switch (type) {
         case 0xFF:
@@ -1731,6 +1698,7 @@ void module_wifi_remote_handler(const unsigned char cmd_datas[], unsigned short 
 }
 
 void get_module_info_handler(const unsigned char cmd_datas[], unsigned short cmd_data_length) {
+    (void) cmd_data_length;
     // Get all currently supported data information 0xff
     // AP ssid name 0x01
     // Country code 0x02
@@ -1746,7 +1714,8 @@ void get_module_info_handler(const unsigned char cmd_datas[], unsigned short cmd
 #endif
 
     u8 result = cmd_datas[1];
-    const char* json_buf = &cmd_datas[2];
+    const char* json_buf = (const char *) &cmd_datas[2];
+    (void) json_buf;
 
     if (result == 0x01) {
         // Failure
@@ -1768,6 +1737,7 @@ void get_module_info_handler(const unsigned char cmd_datas[], unsigned short cmd
 }
 
 void set_module_log_level_handler(const unsigned char cmd_datas[], unsigned short cmd_data_length) {
+    (void) cmd_data_length;
 #ifndef CONFIG_TUYA_DISABLE_ALL_ERROR_MARCO
 #error Adjust module log level result. Delete this error directive after completion.
 #endif
@@ -2588,7 +2558,7 @@ void ap_transparent_trans_test_fun(const u8 value[], u16 length) {
 
 void factory_recovery_result() {
     TUYA_DBG_EXEC(TUYA_PRINT("Got reset event"));
-    // TODO: do something
+    factory_reset_manager_execute();
 }
 
 #endif
